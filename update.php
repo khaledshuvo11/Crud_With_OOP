@@ -5,10 +5,11 @@
 ?>
 		
 
-<?php 
+<?php
+$id = $_GET['id'];
 $db = new Database();
-$query = "SELECT * FROM tbl_user";
-$read = $db->select($query);
+$query = "SELECT * FROM tbl_user WHERE id=$id";
+$getdata = $db->select($query)->fetch_assoc();
 
 if (isset($_POST['submit'])) {
     $name  = mysqli_real_escape_string($db->link, $_POST['name']);
@@ -18,9 +19,22 @@ if (isset($_POST['submit'])) {
     if ($name == '' || $email == '' || $skill == '') {
         $error = "Field Must Not Be Empty";
     } else {
-        $query = "INSERT INTO tbl_user(name, email, skill) values('$name', '$email', '$skill')";
-        $create = $db->insert($query);
+        $query = "UPDATE tbl_user
+        SET
+        name = '$name',
+        email = '$email',
+        skill = '$skill'
+        WHERE id=$id
+        ";
+        $update = $db->update($query);
     }
+}
+?>
+
+<?php
+if (isset($_POST['delete'])) {
+    $query = "DELETE FROM tbl_user WHERE id=$id";
+    $deleteData = $db->delete($query);
 }
 ?>
 
@@ -32,28 +46,29 @@ if (isset($error)) {
 
 ?>
 
-<form action="create.php" method="post">
+<form action="update.php?id=<?php echo $id?>" method="post">
 <table>
     <tr>
         <td>Name</td>
-        <td><input type="text" name="name" placeholder="Please Enter Your Name"></td>
+        <td><input type="text" name="name" value="<?php echo $getdata['name']?>"></td>
     </tr>
 
     <tr>
         <td>E-mail</td>
-        <td><input type="text" name="email" placeholder="Please Enter Your E-mail"></td>
+        <td><input type="text" name="email" value="<?php echo $getdata['email']?>"></td>
     </tr>
 
     <tr>
         <td>Skill</td>
-        <td><input type="text" name="skill" placeholder="Please Enter Your Skill"></td>
+        <td><input type="text" name="skill" value="<?php echo $getdata['skill']?>"></td>
     </tr>
 
     <tr>
         <td></td>
         <td>
-            <input type="submit" name="submit" value="Update">
+            <input type="submit" name="submit" value="Submit">
             <input type="reset" value="Cancel">
+            <input type="submit" name="delete" value="Delete">
         </td>
     </tr>
 </table>

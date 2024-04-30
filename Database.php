@@ -22,6 +22,7 @@ class Database{
         }
     }
 
+    // Select Or Read Data
     public function select($query) {
         $result = $this->link->query($query) or die ($this->link->error.__LINE__);
 
@@ -32,11 +33,36 @@ class Database{
         }
     }
 
+    // Insert Data
     public function insert($query) {
         $insert_rows = $this->link->query($query) or die ($this->link->error.__LINE__);
 
         if ($insert_rows) {
             header("Location: index.php?msg=".urlencode("Data Inserted Successfully"));
+            exit();
+        } else {
+            die("Error: (".$this->link->errno.")".$this->link->error);
+        }
+    }
+
+    // Update Data
+    public function update($query) {
+        $update_rows = $this->link->query($query) or die ($this->link->error.__LINE__);
+
+        if ($update_rows) {
+            header("Location: index.php?msg=".urlencode("Data Updated Successfully"));
+            exit();
+        } else {
+            die("Error: (".$this->link->errno.")".$this->link->error);
+        }
+    }
+
+    // Delete Data
+    public function delete($query) {
+        $delete_rows = $this->link->query($query) or die ($this->link->error.__LINE__);
+
+        if ($delete_rows) {
+            header("Location: index.php?msg=".urlencode("Data Delete Successfully"));
             exit();
         } else {
             die("Error: (".$this->link->errno.")".$this->link->error);
